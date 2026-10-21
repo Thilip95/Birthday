@@ -894,28 +894,46 @@
       }
     }
 
-    function loadAllPhotos() {
-      const hero = "https://prakashkumar-three.vercel.app/boss1.jpeg";
-      const g1 = "https://prakashkumar-three.vercel.app/boss2.jpeg";
-      const g2 = "https://prakashkumar-three.vercel.app/boss5.jpeg";
 
-      const imgHero = document.getElementById('photoSlot1');
-      const imgG1 = document.getElementById('photoSlot2');
-      const imgG2 = document.getElementById('photoSlot3');
-
-      if (imgHero) {
-        imgHero.src = hero;
-        imgHero.onerror = () => { imgHero.src = defaultHeroSVG; };
-      }
-      if (imgG1) {
-        imgG1.src = g1;
-        imgG1.onerror = () => { imgG1.src = defaultGallery1SVG; };
-      }
-      if (imgG2) {
-        imgG2.src = g2;
-        imgG2.onerror = () => { imgG2.src = defaultGallery2SVG; };
-      }
+function loadAllPhotos() {
+  const photos = [
+    {
+      key: 'boss_photo_hero',
+      id: 'photoSlot1',
+      url: 'https://prakashkumar-three.vercel.app/boss1.jpeg',
+      fallback: defaultHeroSVG
+    },
+    {
+      key: 'boss_photo_gallery1',
+      id: 'photoSlot2',
+      url: 'https://prakashkumar-three.vercel.app/boss2.jpeg',
+      fallback: defaultGallery1SVG
+    },
+    {
+      key: 'boss_photo_gallery2',
+      id: 'photoSlot3',
+      url: 'https://prakashkumar-three.vercel.app/boss5.jpeg',
+      fallback: defaultGallery2SVG
     }
+  ];
+
+  photos.forEach(photo => {
+    const img = document.getElementById(photo.id);
+    if (!img) return;
+
+    // Prefer the photo uploaded by the user.
+    const savedPhoto = localStorage.getItem(photo.key);
+
+    // Use the online photo when no saved upload exists.
+    img.onerror = () => {
+      img.onerror = null;
+      img.src = photo.fallback;
+    };
+
+    img.src = savedPhoto || photo.url;
+  });
+}
+
 
     function restoreDefaults() {
       localStorage.removeItem('boss_photo_hero');
